@@ -33,6 +33,11 @@ def login():
 def register():
 	return render_template('register.html')
 
+#Define route for AirlineStaffCreateFlight
+@app.route('/AirlineStaffCreateFlight')
+def register():
+	return render_template('AirlineStaffCreateFlight.html')
+
 #Authenticates the login
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():
@@ -86,6 +91,55 @@ def registerAuth():
 		conn.commit()
 		cursor.close()
 		return render_template('index.html')
+
+
+#Define route for AirlineStaffCreateFlight
+@app.route('/createFlight')
+def createFlight():
+	return render_template('AirlineStaffCreateFlight.html')
+
+#Authenticates the AirlineStaffCreateFlight
+@app.route('/createFlightAuth', methods=['GET', 'POST'])
+def createFlightAuth():
+	#grabs information from the forms
+	flight_num = request.form['flight_num']
+	airline_name = request.form['airline_name']
+	airport_code = request.form['airport_code']
+	ticket_base_price = request.form['ticket_base_price']
+	capacity = request.form['capacity']
+	status = request.form['status']
+	arrival_airport  = request.form['arrival_airport']
+	arrival_date = request.form['arrival_date']
+	arrival_time = request.form['arrival_time']
+	departure_airport = request.form['departure_airport']
+	departure_date = request.form['departure_date']
+	departure_time = request.form['departure_time']
+	
+
+	#cursor used to send queries
+	cursor = conn.cursor()
+	#executes query
+	query = 'SELECT * FROM customer WHERE c_email_address = %s'
+	cursor.execute(query, (username))
+
+	#stores the results in a variable
+	data = cursor.fetchone()
+
+	#use fetchall() if you are expecting more than 1 data row
+	error = None
+
+	if(data):
+		#If the previous query returns data, then user exists
+		error = "This user already exists"
+		return render_template('register.html', error = error)
+	else:
+		ins = 'INSERT INTO customer VALUES(%s, %s)'
+		cursor.execute(ins, (username, password))
+		conn.commit()
+		cursor.close()
+		return render_template('index.html')
+
+
 
 @app.route('/home')
 def home():
