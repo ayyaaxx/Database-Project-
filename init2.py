@@ -43,7 +43,7 @@ def loginAuth():
 	#cursor used to send queries
 	cursor = conn.cursor()
 	#executes query
-	query = 'SELECT * FROM user WHERE username = %s and password = %s'
+	query = 'SELECT * FROM customer WHERE c_email_address = %s and password = %s'
 	cursor.execute(query, (username, password))
 	#stores the results in a variable
 	data = cursor.fetchone()
@@ -70,7 +70,7 @@ def registerAuth():
 	#cursor used to send queries
 	cursor = conn.cursor()
 	#executes query
-	query = 'SELECT * FROM user WHERE username = %s'
+	query = 'SELECT * FROM customer WHERE c_email_address = %s'
 	cursor.execute(query, (username))
 	#stores the results in a variable
 	data = cursor.fetchone()
@@ -81,7 +81,7 @@ def registerAuth():
 		error = "This user already exists"
 		return render_template('register.html', error = error)
 	else:
-		ins = 'INSERT INTO user VALUES(%s, %s)'
+		ins = 'INSERT INTO customer VALUES(%s, %s)'
 		cursor.execute(ins, (username, password))
 		conn.commit()
 		cursor.close()
