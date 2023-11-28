@@ -91,7 +91,7 @@ def registerAuth():
 def home():
     username = session['username']
     cursor = conn.cursor()
-    query = 'SELECT first_name, c_email_address FROM customer WHERE first_name = %s ORDER BY c_email_address'
+    query = 'SELECT first_name, c_email_address FROM customer WHERE c_email_address = %s ORDER BY c_email_address'
     cursor.execute(query, (username,))
     data1 = cursor.fetchall()
     cursor.close()
@@ -103,16 +103,16 @@ def home():
 
 
 		
-@app.route('/post', methods=['GET', 'POST'])
-def post():
-	username = session['username']
-	cursor = conn.cursor();
-	blog = request.form['blog']
-	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-	cursor.execute(query, (blog, username))
-	conn.commit()
-	cursor.close()
-	return redirect(url_for('home'))
+# @app.route('/post', methods=['GET', 'POST'])
+# def post():
+# 	username = session['username']
+# 	cursor = conn.cursor();
+# 	blog = request.form['blog']
+# 	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
+# 	cursor.execute(query, (blog, username))
+# 	conn.commit()
+# 	cursor.close()
+# 	return redirect(url_for('home'))
 
 @app.route('/logout')
 def logout():
