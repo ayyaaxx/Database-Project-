@@ -35,7 +35,7 @@ def register():
 
 #Define route for AirlineStaffCreateFlight
 @app.route('/AirlineStaffCreateFlight')
-def register():
+def register2():
 	return render_template('AirlineStaffCreateFlight.html')
 
 #Authenticates the login
