@@ -31,16 +31,6 @@ def hello():
 def login():
 	return render_template('login.html')
 
-#Define route for register
-@app.route('/register')
-def register():
-	return render_template('register.html')
-
-#Define route for AirlineStaffCreateFlight
-@app.route('/AirlineStaffCreateFlight')
-def register():
-	return render_template('AirlineStaffCreateFlight.html')
-
 #Authenticates the login
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():
