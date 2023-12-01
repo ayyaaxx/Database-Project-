@@ -6,3 +6,59 @@
 3. Create Flight (button) [AirlineStaffCreateFlight.html]
 4. View Earned Revenue 
 -->
+
+<html>
+<head>
+
+<title>Airline Staff Homepage</title>
+
+<style>
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        background-color: #19125a;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
+
+</head>
+<body>
+
+<h1>Welcome to Airline Staff Homepage!</h1>
+
+<body>
+    <form action="/AirlineStaffHomepageAuth" method="POST">
+
+        <input type="text" name = "airline_name" placeholder="Airline Name" required/> </br>
+
+        <input type="submit" value = Submit />
+
+        {% if error %}
+            <p class="error"><strong>Error:</strong> {{error}}</p>
+        {% endif %}
+    </form>
+</body>
+
+<body>
+    <p>Click a Button to Navigate</p>
+
+    <a href="/ASviewFlights" class="button">View All Flights</a>
+
+    <a href="/" class="button">Return Home</a>
+    
+
+    <script>
+        function navigateTo(url) {
+            window.location.href = url;
+        }
+    </script>
+</body>
+
+</body>
+</html>
