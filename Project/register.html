@@ -4,6 +4,20 @@
 <body>
 <form action="/registerAuth" method="POST">
 	<input type="text" name = "username" placeholder="username" required/> </br>
+	<input type="text" name = "c_email_address" placeholder="email_address" required/> </br>
+	<input type="text" name = "first_name" placeholder="first_name" required/> </br>
+	<input type="text" name = "last_name" placeholder="last_name" required/> </br>
+	<input type="date" name = "date_of_birth" required/> </br>
+	<input type="number" name = "building_num" placeholder="building_num" required/> </br>
+	<input type="text" name = "street" placeholder="street" required/> </br>
+	<input type="number" name = "apt_num" placeholder="apt_num" required/> </br>
+	<input type="text" name = "city" placeholder="city" required/> </br>
+	<input type="text" name = "state" placeholder="state" required/> </br>
+	<input type="number" name = "zip_code" placeholder="zip_code" required/> </br>
+	<input type="number" name = "phone_number" placeholder="phone_number" required/> </br>
+	<input type="number" name = "passport_number" placeholder="passport_number" required/> </br>
+	<input type= "date" name = "passport_expiration" placeholder="passport_expiration" required/> </br>
+	<input type="text" name = "passport_country" placeholder="passport_country" required/> </br>
 	<input type="password" name = "password" placeholder="password" required/></br>
 	<input type="submit" value = Register />
 	{% if error %}
