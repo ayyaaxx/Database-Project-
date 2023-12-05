@@ -15,7 +15,7 @@ conn = pymysql.connect(host='localhost',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
-template_dir = os.path.abspath('project')  # Adjust the path accordingly
+template_dir = os.path.abspath('Project')  # Adjust the path accordingly
 app.template_folder = template_dir 
 
 #Define a route to index
