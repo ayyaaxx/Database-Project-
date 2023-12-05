@@ -15,12 +15,12 @@ conn = pymysql.connect(host='localhost',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
-template_dir = os.path.abspath('Project')  # Adjust the path accordingly
+template_dir = os.path.abspath('project')  # Adjust the path accordingly
 app.template_folder = template_dir 
 
-#Define a route to hello function
+#Define a route to index
 @app.route('/')
-def hello():
+def index():
 	return render_template('index.html')
 
 #-------------------------------------------------------------------------
@@ -83,7 +83,7 @@ def registerAuth():
 	#use fetchall() if you are expecting more than 1 data row
 	error = None
 	if(data):
-		#If the previous quergy returns data, then user exists
+		#If the previous query returns data, then user exists
 		error = "This user already exists"
 		return render_template('register.html', error = error)
 	else:
@@ -101,36 +101,39 @@ def registerAuth():
 def homepage():
 	return render_template('AirlineStaffHomepage.html')
 
-#Authenticates the AirlineStaffHomepage
-@app.route('/AirlineStaffHomepageAuth', methods=['GET', 'POST'])
-def AirlineStaffHomepageAuth():
-	#grabs information from the forms
-	airline_name = request.form['airline_name']
-
-	#cursor used to send queries
-	cursor = conn.cursor()
-	#executes query
-	query = 'SELECT * FROM flight WHERE airline_name = %s'
-	cursor.execute(query, (airline_name))
-	#stores the results in a variable
-	data1 = cursor.fetchone()
-	#use fetchall() if you are expecting more than 1 data row
-	error = None
-
-	return render_template('ASview.html', data=data1)
-
 #-------------------------------------------------------------------------
 # AIRLINE STAFF VIEW FLIGHTS INFO
 
-#Define route for AirlineStaffViewFlights
+# #Define route for AirlineStaffViewFlights
 @app.route('/ASviewFlights')
 def ASviewFlights():
-	return render_template('AirlineStaffViewFlights.html')
+	return render_template('ASview.html')
 
+@app.route('/ASviewFlightsAuth')
+def ASviewFlightsAuth():
+	#cursor used to send queries
+	cursor = conn.cursor()
+	#executes query
+	query = 'SELECT * FROM flight'
+	cursor.execute(query)
+	result = cursor.fetchall()
+	cursor.close()
+
+	return render_template('ASview.html', result = result)
 	
-#Authenticates the AirlineStaffViewFlights
-@app.route('/ASviewFlightsAuth', methods=['GET', 'POST'])
-def ASviewFlightsAuth():	
+
+
+#-------------------------------------------------------------------------
+# AIRLINE STAFF CREATE FLIGHT INFO
+
+#Define route for AirlineStaffCreateFlight
+@app.route('/createFlight')
+def createFlight():
+	return render_template('AirlineStaffCreateFlight.html')
+
+#Authenticates the AirlineStaffCreateFlight
+@app.route('/createFlightAuth', methods=['POST'])
+def createFlightAuth():	
 	flight_num = request.form['flight_num']
 	airline_name = request.form['airline_name']
 	airport_code = request.form['airport_code']
@@ -144,22 +147,54 @@ def ASviewFlightsAuth():
 	departure_date = request.form['departure_date']
 	departure_time = request.form['departure_time']
 
+	cursor = conn.cursor()
+
+	airportCheck_query = "SELECT airport_code FROM airport WHERE airport_code = %s"
+	cursor.execute(airportCheck_query, (airport_code,))
+	existing_airport = cursor.fetchone()
+
+	if existing_airport:
+		flight_query = "INSERT INTO flight (flight_num, airline_name, airport_code, ticket_base_price, capacity, status, arrival_airport, arrival_date, arrival_time, departure_airport, departure_date, departure_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+		# Execute the query with the form data
+		cursor.execute(flight_query, (flight_num, airline_name, airport_code, ticket_base_price, capacity, status,
+							arrival_airport, arrival_date, arrival_time, departure_airport, departure_date, departure_time))
+
+		# Commit the changes to the database
+		conn.commit()
+
+		return "Flight created successfully!"
+
+	else:
+		return "Airport with code {} does not exist.".format(airport_code)
+
+
+	# Close the cursor
+	cursor.close()
+
+	# Redirect to a success page or return a success response
+	return redirect('/')
+
+
+
+	# return render_template('index.html')
+
 #-------------------------------------------------------------------------
-# AIRLINE STAFF CREATE FLIGHT INFO
+# AIRLINE STAFF CHANGE STATUS OF FLIGHT
 
-#Define route for AirlineStaffCreateFlight
-@app.route('/createFlight')
-def createFlight():
-	return render_template('AirlineStaffCreateFlight.html')
+#Define route for ASchangeFlightStatus
+@app.route('/changeFlightStatus')
+def changeFlightStatus():
+	return render_template('ASchangeFlightStatus.html')
 
-#Authenticates the AirlineStaffCreateFlight
-@app.route('/createFlightAuth', methods=['GET', 'POST'])
-def createFlightAuth():	
-	flight_num = request.form['flight_num']
+#Authenticates the ASchangeFlightStatus
+# @app.route('/changeFlightStatus', methods=['POST'])
+# def changeFlight():	
+
+
+
 
 #-------------------------------------------------------------------------
-
-
 
 
 @app.route('/home')
@@ -177,26 +212,10 @@ def home():
     return render_template('home.html', username=username, posts=data1)
 
 
-		
-# @app.route('/post', methods=['GET', 'POST'])
-# def post():
-# 	username = session['username']
-# 	cursor = conn.cursor();
-# 	blog = request.form['blog']
-# 	query = 'INSERT INTO blog (blog_post, username) VALUES(%s, %s)'
-# 	cursor.execute(query, (blog, username))
-# 	conn.commit()
-# 	cursor.close()
-# 	return redirect(url_for('home'))
-
 @app.route('/logout')
 def logout():
 	session.pop('username')
 	return redirect('/')
 		
-app.secret_key = 'some key that you will never guess'
-#Run the app on localhost port 5000
-#debug = True -> you don't have to restart flask
-#for changes to go through, TURN OFF FOR PRODUCTION
 if __name__ == "__main__":
 	app.run('127.0.0.1', 5100, debug = True)
