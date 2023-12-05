@@ -271,10 +271,6 @@ def createFlightAuth():
 	flight_num = request.form['flight_num']
 
 #-------------------------------------------------------------------------
-
-
-
-
 @app.route('/home')
 def home():
     username = session['username']
@@ -303,6 +299,41 @@ def AirlineHome():
         print(each['first_name'])
 
     return render_template('AirlineHome.html', username=username, posts=data1)
+#-------------------------------------------------------------------------
+#CUSTOMER TRACK SPENDING
+@app.route('/spending', methods=['GET'])
+def track_spending():
+	cursor = conn.cursor()
+	query1 = 'SELECT SUM(ticket_sale_price) FROM ticket WHERE purchased_date >= CURDATE() - INTERVAL 1 YEAR'
+	cursor.execute(query1)
+	past_year = cursor.fetchall()
+	print("Past Year Query Result:", past_year)
+	query2 = 'SELECT MONTH(purchased_date) AS month, SUM(ticket_sale_price) AS total_spent FROM ticket WHERE purchased_date >= CURDATE() - INTERVAL 6 MONTH GROUP BY month'
+	six_months = cursor.fetchall()
+	cursor.close()
+	return render_template('home.html',past_year=past_year, six_months=six_months)
+#-------------------------------------------------------------------------
+#CUSTOMER RATING/COMMENTS
+@app.route('/review_flight', methods=['GET','POST'])
+def review_flight(ticket_id):
+	if request.method == "POST":
+		rating = request.form['rating']
+		comments = request.form['comments']
+		c_email_address = session.get('username')
+		cursor = conn.cursor()
+		query = 'INSERT INTO flight_review(c_email_address, rating, comments) VALUES (%s, %s, %s, %s)'
+		cursor.execute(query,(c_email_address, rating,comments))
+		cursor.close()
+		return redirect(url_for('home.html'))
+	return render_template('review_flight.html', ticket_id=ticket_id)
+
+		
+		
+
+
+
+
+
 		
 # @app.route('/post', methods=['GET', 'POST'])
 # def post():

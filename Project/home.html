@@ -8,24 +8,88 @@
 	<input type="text" name = "blog" placeholder="post" required/> </br>
 	<input type="submit" value = Post />
 </form>
+<!-- <form action="/spending" method="GET">
+	<h1>Track My Spending</h1>
+	<h2>Total Amount Spend in the Past Year</h2>
+	<p>Total Amount Spent: {{past_year}}</p>
+	
+	<h2>Month-wise Spending for the Last 6 months</h2>
+	<table>
+		<tr>
+			<th>Month</th>
+			<th>Total Spent</th>
+		</tr>
+		{% for row in six_months%}
+			<tr>
+				<td>{{row[0]}}</td>
+				<td>{{row[1]}}</td>
+			</tr>
+		{% endfor%}
+	</table>
+	
+	<style type="text/css">
+		table, th, td{
+			border: 1px solid black;
+		}
+	</style>
+	
+	<table>
+		<th>Time</th>
+		<th>Post</th>
+	
+	{% for line in posts %}
+		<tr>
+			<td>{{line['ts']}}</td>
+			<td>{{line['blog_post']}}</td>
+		</tr>
+	{% endfor %}
+	</table>
+</form> -->
 
-<style type="text/css">
-	table, th, td{
-		border: 1px solid black;
-	}
-</style>
+<form action="/spending" method="GET">
+    <h1>Track My Spending</h1>
+    
+    <h2>Total Amount Spend in the Past Year</h2>
+    <p>Total Amount Spent: {{ past_year[0][0] if past_year else 'No data' }}</p>
 
-<table>
-	<th>Time</th>
-	<th>Post</th>
+    <h2>Month-wise Spending for the Last 6 months</h2>
+    <table>
+        <tr>
+            <th>Month</th>
+            <th>Year</th>
+            <th>Total Spent</th>
+        </tr>
+        {% for row in six_months %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row['year'] }}</td>
+                <td>{{ row[1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
-{% for line in posts %}
-	<tr>
-		<td>{{line['ts']}}</td>
-		<td>{{line['blog_post']}}</td>
-	</tr>
-{% endfor %}
-</table>
+    <style type="text/css">
+        table, th, td{
+            border: 1px solid black;
+        }
+    </style>
+
+    <table>
+        <th>Time</th>
+        <th>Post</th>
+
+        {% for line in posts %}
+            <tr>
+                <td>{{ line['ts'] }}</td>
+                <td>{{ line['blog_post'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</form>
+
+
+
+<a href="/review_flight">Review Flights</a>
 
 <a href="/logout">Logout</a>
 
