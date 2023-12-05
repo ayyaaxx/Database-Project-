@@ -100,7 +100,7 @@ def registerAuth():
     error = None
 
     if data:
-        #If the previous query returns data, then the user exists
+    	#If the previous query returns data, then the user exists
         error = "This user already exists"
         return render_template('register.html', error=error)
     else:
@@ -172,6 +172,7 @@ def registerAirlineStaffAuth():
         cursor.close()
         return render_template('index.html')
 
+
 #-------------------------------------------------------------------------
 # Airline Staff LOGIN INFO
 #Define route for login
@@ -195,8 +196,7 @@ def AirlineloginAuth():
 	data = cursor.fetchone()
 	#use fetchall() if you are expecting more than 1 data row
 	cursor.close()
-
-    error = None
+	error = None
 	if(data):
 		#creates a session for the the user
 		#session is a built in
@@ -207,36 +207,19 @@ def AirlineloginAuth():
 		error = 'Invalid login or username'
 		return render_template('Airlinelogin.html', error=error)
 
+
 #-------------------------------------------------------------------------
 # AIRLINE STAFF HOMEPAGE INFO
 
-#Define route for AirlineStaffHompage
+#Define route for AirlineStaffHomepage
 @app.route('/AirlineStaffHomepage')
 def homepage():
 	return render_template('AirlineStaffHomepage.html')
 
-#Authenticates the AirlineStaffHomepage
-@app.route('/AirlineStaffHomepageAuth', methods=['GET', 'POST'])
-def AirlineStaffHomepageAuth():
-	#grabs information from the forms
-	airline_name = request.form['airline_name']
-
-	#cursor used to send queries
-	cursor = conn.cursor()
-	#executes query
-	query = 'SELECT * FROM flight WHERE airline_name = %s'
-	cursor.execute(query, (airline_name))
-	#stores the results in a variable
-	data1 = cursor.fetchone()
-	#use fetchall() if you are expecting more than 1 data row
-	error = None
-
-	return render_template('ASview.html', data=data1)
-
 #-------------------------------------------------------------------------
 # AIRLINE STAFF VIEW FLIGHTS INFO
 
-# #Define route for AirlineStaffViewFlights
+#Define route for AirlineStaffViewFlights
 @app.route('/ASviewFlights')
 def ASviewFlights():
 	return render_template('ASview.html')
@@ -321,14 +304,10 @@ def changeFlightStatus():
 
 #Authenticates the ASchangeFlightStatus
 # @app.route('/changeFlightStatus', methods=['POST'])
-# def changeFlight():	
-
-
+# def changeFlight():
 
 
 #-------------------------------------------------------------------------
-
-
 @app.route('/home')
 def home():
     username = session['username']
@@ -342,6 +321,7 @@ def home():
         print(each['first_name'])
 
     return render_template('home.html', username=username, posts=data1)
+
 
 @app.route('/AirlineHome')
 def AirlineHome():
@@ -370,7 +350,6 @@ def track_spending():
 	six_months = cursor.fetchall()
 	cursor.close()
 	return render_template('home.html',past_year=past_year, six_months=six_months)
-
 #-------------------------------------------------------------------------
 #CUSTOMER RATING/COMMENTS
 @app.route('/review_flight', methods=['GET','POST'])
@@ -385,7 +364,15 @@ def review_flight(ticket_id):
 		cursor.close()
 		return redirect(url_for('home.html'))
 	return render_template('review_flight.html', ticket_id=ticket_id)
-	
+
+		
+		
+
+
+
+
+
+		
 # @app.route('/post', methods=['GET', 'POST'])
 # def post():
 # 	username = session['username']
@@ -397,11 +384,14 @@ def review_flight(ticket_id):
 # 	cursor.close()
 # 	return redirect(url_for('home'))
 
-
 @app.route('/logout')
 def logout():
 	session.pop('username')
 	return redirect('/')
 		
+app.secret_key = 'some key that you will never guess'
+#Run the app on localhost port 5000
+#debug = True -> you don't have to restart flask
+#for changes to go through, TURN OFF FOR PRODUCTION
 if __name__ == "__main__":
 	app.run('127.0.0.1', 5100, debug = True)
