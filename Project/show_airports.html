@@ -1,0 +1,16 @@
+<!-- show_airports.html -->
+<html>
+<head>
+    <!-- Add your styles if needed -->
+</head>
+<body>
+    <h2>List of Airports</h2>
+    <ul>
+        {% for airport in airports %}
+            <li>{{ airport.airport_code }} - {{ airport.name }} - {{ airport.city }}, {{ airport.country }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Go back</a>
+</body>
+</html>

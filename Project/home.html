@@ -1,35 +1,21 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spending Tracker</title>
 </head>
 <body>
-<form action="/post" method="POST">
-	<h1>Welcome Customer {{username}}</h1>
-	<h2> This is all Dey's stuff that we need to delete</h2>
-	<input type="text" name = "blog" placeholder="post" required/> </br>
-	<input type="submit" value = Post />
-</form>
+    <h1>Spending Tracker</h1>
 
-<style type="text/css">
-	table, th, td{
-		border: 1px solid black;
-	}
-</style>
+	<h2>Past Year Spending: ${{ past_year }}</h2>
 
-<table>
-	<th>Time</th>
-	<th>Post</th>
-
-{% for line in posts %}
-	<tr>
-		<td>{{line['ts']}}</td>
-		<td>{{line['blog_post']}}</td>
-	</tr>
-{% endfor %}
-</table>
-
-<a href="/logout">Logout</a>
-
+	<h2>Six Months Spending:</h2>
+	<ul>
+		{% for record in six_months %}
+			<li>Month {{ record.month }}: ${{ record.total_spent }}</li>
+		{% endfor %}
+	</ul>
+	
 </body>
-
-
 </html>
