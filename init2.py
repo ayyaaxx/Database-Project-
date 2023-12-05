@@ -100,7 +100,11 @@ def registerAuth():
     error = None
 
     if data:
+<<<<<<< HEAD
     	#If the previous query returns data, then the user exists
+=======
+        #If the previous query returns data, then the user exists
+>>>>>>> 83f35b7c51f11f2525924b4e7fe5acc3e144238b
         error = "This user already exists"
         return render_template('register.html', error=error)
     else:
@@ -172,7 +176,10 @@ def registerAirlineStaffAuth():
         cursor.close()
         return render_template('index.html')
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 83f35b7c51f11f2525924b4e7fe5acc3e144238b
 #-------------------------------------------------------------------------
 # Airline Staff LOGIN INFO
 #Define route for login
@@ -206,7 +213,10 @@ def AirlineloginAuth():
 		#returns an error message to the html page
 		error = 'Invalid login or username'
 		return render_template('Airlinelogin.html', error=error)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 83f35b7c51f11f2525924b4e7fe5acc3e144238b
 
 #-------------------------------------------------------------------------
 # AIRLINE STAFF HOMEPAGE INFO
@@ -295,6 +305,7 @@ def createFlightAuth():
 	# return render_template('index.html')
 
 #-------------------------------------------------------------------------
+<<<<<<< HEAD
 # AIRLINE STAFF CHANGE STATUS OF FLIGHT
 
 #Define route for ASchangeFlightStatus
@@ -308,6 +319,8 @@ def changeFlightStatus():
 
 
 #-------------------------------------------------------------------------
+=======
+>>>>>>> 83f35b7c51f11f2525924b4e7fe5acc3e144238b
 @app.route('/home')
 def home():
     username = session['username']
@@ -336,7 +349,10 @@ def AirlineHome():
         print(each['first_name'])
 
     return render_template('AirlineHome.html', username=username, posts=data1)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 83f35b7c51f11f2525924b4e7fe5acc3e144238b
 #-------------------------------------------------------------------------
 #CUSTOMER TRACK SPENDING
 @app.route('/spending', methods=['GET'])
