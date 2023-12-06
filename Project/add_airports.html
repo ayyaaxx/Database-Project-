@@ -1,0 +1,5 @@
+<ul>
+    {% for airport in airports %}
+        <li>{{ airport.airport_code }} - {{ airport.name }} - {{ airport.city }}, {{ airport.country }}</li>
+    {% endfor %}
+</ul>

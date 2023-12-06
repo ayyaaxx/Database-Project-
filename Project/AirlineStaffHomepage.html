@@ -33,31 +33,16 @@
 <h1>Welcome to Airline Staff Homepage!</h1>
 
 <body>
-    <form action="/AirlineStaffHomepageAuth" method="POST">
-
-        <input type="text" name = "airline_name" placeholder="Airline Name" required/> </br>
-
-        <input type="submit" value = Submit />
-
-        {% if error %}
-            <p class="error"><strong>Error:</strong> {{error}}</p>
-        {% endif %}
-    </form>
-</body>
-
-<body>
     <p>Click a Button to Navigate</p>
+
+    <a href="/" class="button">Return Home</a>
 
     <a href="/ASviewFlights" class="button">View All Flights</a>
 
-    <a href="/" class="button">Return Home</a>
-    
+    <a href="/createFlight" class="button">Create New Flight</a>
 
-    <script>
-        function navigateTo(url) {
-            window.location.href = url;
-        }
-    </script>
+    <a href="/changeFlightStatus" class="button">Change Flight Status</a>
+
 </body>
 
 </body>

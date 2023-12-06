@@ -16,10 +16,92 @@ departure_time
 <html>
 <head>
 <title>Create Flight</title>
+
+<style>
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        background-color: #19125a;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
+
 </head>
 <body>
 
 <h1>Create Flight</h1>
+
+<h2> Enter Information to Create A New Flight</h2>
+
+<form action="/createFlightAuth" method="POST">
+    <label for="flight_num">Flight Number:</label>
+    <input type="text" id="flight_num" name="flight_num" placeholder="Enter Flight Number" required="required">
+    <br>
+
+    <label for="airline_name">Airline Name:</label>
+    <input type="text" id="airline_name" name="airline_name" placeholder="Enter Airline Name" required="required">
+    <br>
+
+    <label for="airport_code">Airport Code:</label>
+    <input type="text" id="airport_code" name="airport_code" placeholder="Enter Airport Code" required="required">
+    <br>
+
+    <label for="ticket_base_price">Ticket Base Price:</label>
+    <input type="number" min="1" step="any" id="ticket_base_price" name="ticket_base_price" placeholder="Enter Ticket Base Price" required="required">
+    <br>
+
+    <label for="capacity">Capacity:</label>
+    <input type="number" min="1" step="any" id="capacity" name="capacity" placeholder="Enter Capacity" required="required">
+    <br>
+
+    <label for="status">Select the status:</label>
+    <select name="status" id="status">
+        <option value="On Time">On Time</option>
+        <option value="Delayed">Delayed</option>
+        <option value="Cancelled">Cancelled</option>
+    </select>
+    <br>
+
+    <label for="departure_airport">Departure Airport:</label>
+    <input type="text" id="departure_airport" name="departure_airport" required="required">
+    <br>
+
+    <label for="departure_date">Departure Date: </label>
+    <input type="date" id="departure_date" name="departure_date" required="required">
+    <br>
+
+    <label for="departure_time">Departure Time</label>
+    <input type="time" id="departure_time" name="departure_time" required="required">
+    <br>
+
+    <label for="arrival_airport">Arrival Airport: </label>
+    <input type="text" id="arrival_airport" name="arrival_airport">
+    <br>
+
+    <label for="arrival_date">Arrival Date: </label>
+    <input type="date" id="arrival_date" name="arrival_date">
+    <br>
+
+    <label for="arrival_time">Arrival Time</label>
+    <input type="time" id="arrival_time" name="arrival_time">
+    <br>
+
+
+    <button type="submit"> Submit New Flight</button>
+
+</form>
+
+<br>
+
+<a href="/" class="button">Return Home</a>
+
+
 
 </body>
 </html>

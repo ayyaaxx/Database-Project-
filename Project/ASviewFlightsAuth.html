@@ -1,0 +1,20 @@
+<!-- ASviewFlightsAuth.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Add your styles if needed -->
+</head>
+<body>
+    <h2>List of Flights</h2>
+    <ul>
+        {% for flight in flights %}
+            <li>
+                {{ flight.flight_num }} - {{ flight.airline_name }} - {{ flight.airport_code }}<br>
+                Status: {{ flight.status }}<br>
+                Departure: {{ flight.departure_airport }} on {{ flight.departure_date }} at {{ flight.departure_time }}<br>
+                Arrival: {{ flight.arrival_airport }} on {{ flight.arrival_date }} at {{ flight.arrival_time }}<br>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
