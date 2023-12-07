@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Flight</title>
+</head>
+<body>
+    <h2>Review a Flight</h2>
+
+    <form action="{{ url_for('review_flight') }}" method="POST" >
+        <label for="flightSelect">Select a Flight:</label>
+        <select id="flightSelect" name="selected_flight_num" required>
+            {% for flight in customer_flights %}
+                <option value="{{ flight.flight_num }}">{{ flight.flight_num }}</option>
+            {% endfor %}
+        </select>
+
+        <br>
+
+        <label for="rating">Rating:</label>
+        <input type="number" name="rating" min="0" max="5" required>
+
+        <br>
+
+        <label for="comments">Comments:</label>
+        <textarea name="comments" rows="4" cols="50" required></textarea>
+
+        <br>
+
+        <button type="submit">Submit Review</button>
+    </form>
+
+</body>
+</html>
