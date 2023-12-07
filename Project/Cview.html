@@ -4,7 +4,7 @@
 
     <head>
 
-        <title>View All the Flights the Worker </title>
+        <title>View All the Flights the Customer </title>
 
         <style>
             table, th, td {
@@ -48,7 +48,7 @@
             </tr> 
             
 
-            {% for data in result %}
+            {% for data in flights %}
                 <tr >
                     <td>{{data.flight_num}}</td>
                     <td>{{data['airline_name']}}</td>

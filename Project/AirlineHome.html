@@ -1,38 +1,100 @@
+<!-- 
+1. View next 30 days flight
+2. All Flights (button) [AirlineStaffAllFlight.html]
+    2a. Change status
+    2b. Schedule Maintenance (button)
+3. Create Flight (button) [AirlineStaffCreateFlight.html]
+4. View Earned Revenue 
+-->
+
 <html>
 <head>
-</head>
-<body>
-	<h1>Welcome Airline Staff {{username}}</h1>
-<a href="/add_airport">Tap here to add an airport</a><br>
-<a href="/add_airplane">Tap here to add an airplane</a><br>
-<a href="/show_airports">Tap here view airports</a><br>
-<a href="/show_airplanes">Tap here view airplanes</a><br>
-<a href="/schedule_maintenance">Tap here schedule Maintenance</a><br>
 
+<title>Airline Staff Homepage</title>
 
-
-
-<style type="text/css">
-	table, th, td{
-		border: 1px solid black;
-	}
+<style>
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        background-color: #19125a;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
 </style>
 
-<table>
-	<th>Time</th>
-	<th>Post</th>
+</head>
+<body>
 
-{% for line in posts %}
-	<tr>
-		<td>{{line['ts']}}</td>
-		<td>{{line['blog_post']}}</td>
-	</tr>
-{% endfor %}
-</table>
+<h1>Welcome to Airline Staff Homepage {{username}} !</h1>
 
-<a href="/logout">Logout</a>
+<body>
+    <h2>Future Flights - Next 30 Days:</h2>
+
+    {% if flights %}
+	<table style="width:100%">
+		<tr>
+			<th>Flight Number</th>
+			<th>Airline Name</th>
+			<th>Airport Code</th>
+			<th>Ticket Base Price</th>
+			<th>Capacity</th>
+			<th>Status</th>
+			<th>Arrival Airport</th>
+			<th>Arrival Date</th>
+			<th>Arrival Time</th>
+			<th>Departure Airport</th>
+			<th>Departure Date</th>
+			<th>Departure Time</th>
+            <th>View Customer Ratings</th>
+		</tr> 
+		
+		{% for data in flights %}
+			<tr>
+				<td>{{data['flight_num']}}</td>
+				<td>{{data['airline_name']}}</td>
+				<td>{{data['airport_code']}}</td>
+				<td>{{data['ticket_base_price']}}</td>
+				<td>{{data['capacity']}}</td>
+				<td>{{data['status']}}</td>
+				<td>{{data['arrival_airport']}}</td>
+				<td>{{data['arrival_date']}}</td>
+				<td>{{data['arrival_time']}}</td>
+				<td>{{data['departure_airport']}}</td>
+				<td>{{data['departure_date']}}</td>
+				<td>{{data['departure_time']}}</td>
+                <!-- YANNI -->
+                <td><a href="/" class="button">View Ratings</a></td>
+			</tr>
+		{% endfor %}
+	</table>
+    {% else %}
+        <p>No scheduled flights to work.</p>
+    {% endif %}
+
+
+    <h2>Click a Button to Navigate:</h2>
+
+    <a href="/ASview" class="button">All Flights</a>
+
+    <a href="/ASfutureFlights" class="button">Working Future Flights</a>
+
+    <a href="/ASpreviousFlights" class="button">Worked Past Flights</a>
+
+    <a href="/add_airport" class="button">Add Airport</a>
+
+    <a href="/add_airplane" class="button">Add Airplane</a>    
+
+    <a href="/createFlight" class="button">Create New Flight</a>
+
+    <a href="/logout" class="button">Logout</a>
+
 
 </body>
 
-
+</body>
 </html>
