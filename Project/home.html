@@ -3,105 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spending Tracker</title>
-</head>
-<body>
-<form action="/post" method="POST">
-	<h1>Welcome Customer {{username}}</h1>
-	<a href="/add_tickets">Tap here to add an airport</a><br>
+    <title>Spending Tracker & View Future Flights</title>
 
-</form>
-<!-- <form action="/spending" method="GET">
-	<h1>Track My Spending</h1>
-	<h2>Total Amount Spend in the Past Year</h2>
-	<p>Total Amount Spent: {{past_year}}</p>
-	
-	<h2>Month-wise Spending for the Last 6 months</h2>
-	<table>
-		<tr>
-			<th>Month</th>
-			<th>Total Spent</th>
-		</tr>
-		{% for row in six_months%}
-			<tr>
-				<td>{{row[0]}}</td>
-				<td>{{row[1]}}</td>
-			</tr>
-		{% endfor%}
-	</table>
-	
-	<style type="text/css">
-		table, th, td{
-			border: 1px solid black;
+    <style>
+		table, th, td {
+		  border:1px solid rgb(20, 8, 69);
 		}
-	</style>
-	
-	<table>
-		<th>Time</th>
-		<th>Post</th>
-	
-	{% for line in posts %}
-		<tr>
-			<td>{{line['ts']}}</td>
-			<td>{{line['blog_post']}}</td>
-		</tr>
-	{% endfor %}
-	</table>
-</form> -->
 
-<form action="/spending" method="GET">
-    <h1>Track My Spending</h1>
-    
-    <h2>Total Amount Spend in the Past Year</h2>
-    <p>Total Amount Spent: {{ past_year[0][0] if past_year else 'No data' }}</p>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    <h2>Month-wise Spending for the Last 6 months</h2>
-    <table>
-        <tr>
-            <th>Month</th>
-            <th>Year</th>
-            <th>Total Spent</th>
-        </tr>
-        {% for row in six_months %}
-            <tr>
-                <td>{{ row[0] }}</td>
-                <td>{{ row['year'] }}</td>
-                <td>{{ row[1] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
 
-    <style type="text/css">
-        table, th, td{
-            border: 1px solid black;
+        h1 {
+            color: #19125a;
+            margin-bottom: 20px;
+        }
+
+
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 18px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .button:hover {
+            background-color: #297fb8;
+        }
+
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 5px 0;
+        }
+
+
+        a:hover {
+            color: #297fb8;
+        }
+
+
+        .main-content {
+            text-align: center;
         }
     </style>
+</head>
 
-    <table>
-        <th>Time</th>
-        <th>Post</th>
+<body>
 
-        {% for line in posts %}
-            <tr>
-                <td>{{ line['ts'] }}</td>
-                <td>{{ line['blog_post'] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-</form>
-
-
-
-<a href="/review_flight">Review Flights</a>
-
-<a href="/logout">Logout</a>
-
-	<h2>Six Months Spending:</h2>
-	<ul>
-		{% for record in six_months %}
-			<li>Month {{ record.month }}: ${{ record.total_spent }}</li>
-		{% endfor %}
-	</ul>
+	<form action="/post" method="POST">
+		<h1>Welcome Customer {{username}}</h1>
 	
+		<a href="/CviewLogged" class="button">Search For Flights</a>
+	
+	</form>
+
+	<h1>Future Flights:</h1>
+
+	{% if flights %}
+		<table style="width:100%">
+			<tr>
+				<th>Flight Number</th>
+				<th>Airline Name</th>
+				<th>Airport Code</th>
+				<th>Ticket Base Price</th>
+				<th>Capacity</th>
+				<th>Status</th>
+				<th>Arrival Airport</th>
+				<th>Arrival Date</th>
+				<th>Arrival Time</th>
+				<th>Departure Airport</th>
+				<th>Departure Date</th>
+				<th>Departure Time</th>
+			</tr> 
+			
+			{% for data in flights %}
+				<tr>
+					<td>{{data['flight_num']}}</td>
+					<td>{{data['airline_name']}}</td>
+					<td>{{data['airport_code']}}</td>
+					<td>{{data['ticket_base_price']}}</td>
+					<td>{{data['capacity']}}</td>
+					<td>{{data['status']}}</td>
+					<td>{{data['arrival_airport']}}</td>
+					<td>{{data['arrival_date']}}</td>
+					<td>{{data['arrival_time']}}</td>
+					<td>{{data['departure_airport']}}</td>
+					<td>{{data['departure_date']}}</td>
+					<td>{{data['departure_time']}}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% else %}
+		<p>No future flights purchased.</p>
+	{% endif %}
+
+
+
+
+
+
+    <div class="main-content">
+        <h1>Welcome, {{ username }}!</h1>
+        <a href="/ASviewFlightsloggedAuth" class="button">View All Flights Available</a><br>
+		<a href="/view_flight_logged" class="button">View Previous Flights</a><br>
+        <a href="/add_tickets" class="button">Purchase a Ticket</a><br>
+        <a href="/show_tickets" class="button">View Purchased Tickets</a><br>
+        <a href="/review_flight" class="button">Review Flights</a><br>
+        <a href="/spending" class="button">Track Spending</a><br>
+        <a href="/view_flight_logged" class="button">View All Your Flights</a><br>
+        <a href="/logout" class="button">Logout</a>
+    </div>
+
+
+
 </body>
 </html>

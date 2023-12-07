@@ -2,9 +2,10 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 import os  # Add this import
-
-
 #Initialize the app from Flask
+# from flask_bcrypt import Bcrypt
+
+# bcrypt = Bcrypt()
 app = Flask(__name__)
 
 #Configure MySQL
@@ -18,9 +19,9 @@ conn = pymysql.connect(host='localhost',
 template_dir = os.path.abspath('Project')  # Adjust the path accordingly
 app.template_folder = template_dir 
 
-#Define a route to index
+#Define a route to hello function
 @app.route('/')
-def index():
+def hello():
 	return render_template('index.html')
 
 #-------------------------------------------------------------------------
@@ -52,7 +53,10 @@ def loginAuth():
 		#creates a session for the the user
 		#session is a built in
 		session['username'] = username
+		# XENA
 		return redirect(url_for('home'))
+
+
 	else:
 		#returns an error message to the html page
 		error = 'Invalid login or username'
@@ -100,7 +104,7 @@ def registerAuth():
     error = None
 
     if data:
-    	#If the previous query returns data, then the user exists
+        #If the previous query returns data, then the user exists
         error = "This user already exists"
         return render_template('register.html', error=error)
     else:
@@ -172,7 +176,6 @@ def registerAirlineStaffAuth():
         cursor.close()
         return render_template('index.html')
 
-
 #-------------------------------------------------------------------------
 # Airline Staff LOGIN INFO
 #Define route for login
@@ -197,6 +200,8 @@ def AirlineloginAuth():
 	#use fetchall() if you are expecting more than 1 data row
 	cursor.close()
 	error = None
+
+	# XENA
 	if(data):
 		#creates a session for the the user
 		#session is a built in
@@ -207,7 +212,6 @@ def AirlineloginAuth():
 		error = 'Invalid login or username'
 		return render_template('Airlinelogin.html', error=error)
 
-
 #-------------------------------------------------------------------------
 # AIRLINE STAFF HOMEPAGE INFO
 
@@ -216,27 +220,209 @@ def AirlineloginAuth():
 def homepage():
 	return render_template('AirlineStaffHomepage.html')
 
-#-------------------------------------------------------------------------
-# AIRLINE STAFF VIEW FLIGHTS INFO
+#Authenticates the AirlineStaffHomepage
+@app.route('/AirlineStaffHomepageAuth', methods=['GET', 'POST'])
+def AirlineStaffHomepageAuth():
+	#grabs information from the forms
+	airline_name = request.form['airline_name']
 
-#Define route for AirlineStaffViewFlights
-@app.route('/ASviewFlights')
-def ASviewFlights():
-	return render_template('ASview.html')
-
-@app.route('/ASviewFlightsAuth')
-def ASviewFlightsAuth():
 	#cursor used to send queries
 	cursor = conn.cursor()
 	#executes query
-	query = 'SELECT * FROM flight'
-	cursor.execute(query)
-	result = cursor.fetchall()
-	cursor.close()
+	query = 'SELECT * FROM flight WHERE airline_name = %s'
+	cursor.execute(query, (airline_name))
+	#stores the results in a variable
+	data1 = cursor.fetchone()
+	#use fetchall() if you are expecting more than 1 data row
+	error = None
 
-	return render_template('ASview.html', result = result)
-	
+	return render_template('AirlineStaffHomepage.html', data=data1)
 
+#-------------------------------------------------------------------------
+# AIRLINE STAFF VIEW FLIGHTS INFO
+
+# Define route for AirlineStaffViewF all flights - ASview
+@app.route('/ASview')
+def ASviewFlights():
+    # Create a cursor
+    cursor = conn.cursor()
+    flight_num = request.args.get('flight_num') 
+
+    # Execute the query to get flight information
+    query = 'SELECT * FROM flight'
+    cursor.execute(query)
+
+    # Fetch all the results
+    flights = cursor.fetchall()
+
+    # Close the cursor
+    cursor.close()
+    print("Flights:", flights)
+
+    # Render the HTML template with the flight data
+    return render_template('ASview.html', flights=flights)
+
+
+
+
+@app.route('/ASviewFlightsAuth', methods=['GET'])
+def ASviewFlightsAuth():
+    # Create a cursor
+    cursor = conn.cursor()
+    flight_num = request.args.get('flight_num') 
+
+    # Execute the query to get flight information
+    query = 'SELECT * FROM flight'
+    cursor.execute(query)
+
+    # Fetch all the results
+    flights = cursor.fetchall()
+
+    # Close the cursor
+    cursor.close()
+    print("Flights:", flights)
+
+    # Render the HTML template with the flight data
+    return render_template('ASviewFlightsAuth.html', flights=flights)
+
+
+#-------------------------------------------------------------------------
+
+
+@app.route('/ASfutureFlights', methods=['GET'])
+def ASfutureFlights():
+    cursor = conn.cursor()
+    username = session.get('username')
+
+    query = '''
+        SELECT *
+        FROM flight
+        WHERE airline_name IN (
+            SELECT airline_name
+            FROM airline_staff
+            WHERE username = %s
+        )
+        AND departure_date > CURDATE()
+    '''
+    cursor.execute(query, (username,))
+    flights = cursor.fetchall()
+
+    cursor.close()
+    message = request.args.get('message', '')
+
+    return render_template('ASfutureFlights.html', flights=flights, message=message)
+
+
+# AIRLINE STAFF VIEW FUTURE FLIGHTS
+# XENA!
+@app.route('/ASpreviousFlights', methods=['GET'])
+def ASpreviousFlights():
+    cursor = conn.cursor()
+
+    username = session.get('username')
+
+    query = '''
+        SELECT *
+        FROM flight
+        WHERE airline_name IN (
+            SELECT airline_name
+            FROM airline_staff
+            WHERE username = %s
+        )
+        AND departure_date <= CURDATE()
+    '''
+    cursor.execute(query, (username,))
+
+    flights = cursor.fetchall()
+
+    cursor.close()
+    print("Flights:", flights)
+
+    return render_template('ASpreviousFlights.html', flights=flights)
+
+
+#-------------------------------------------------------------------------
+# CUSTOMER VIEW ALL FLIGHTS (NOT LOGGED IN)
+@app.route('/CviewNotLogged', methods=['GET'])
+def CviewNotLogged():
+    # Create a cursor
+    cursor = conn.cursor()
+
+    # Execute the query to get flight information PREVIOUS FLIGHTS
+    query = 'SELECT * FROM flight WHERE departure_date > CURDATE()'
+    cursor.execute(query)
+
+    # Fetch all the results
+    flights = cursor.fetchall()
+
+    # Close the cursor
+    cursor.close()
+
+    # Render the HTML template with the flight data
+    return render_template('CviewNotLogged.html', flights=flights)
+
+#-------------------------------------------------------------------------
+# CUSTOMER VIEW ALL FLIGHTS (LOGGED IN, NOT PURCHASED)
+@app.route('/CviewLogged', methods=['GET'])
+def CviewLogged():
+    cursor = conn.cursor()
+
+    query_flights = 'SELECT * FROM flight WHERE departure_date > CURDATE()'
+    cursor.execute(query_flights)
+    flights = cursor.fetchall()
+
+    query_cities = 'SELECT DISTINCT city FROM airport'
+    cursor.execute(query_cities)
+    cities = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template('CviewLogged.html', flights=flights, cities=cities)
+
+
+
+#-------------------------------------------------------------------------
+# CUSTOMER VIEW ALL FLIGHTS (LOGGED IN) purchased 
+@app.route('/view_flight_logged', methods=['GET'])
+def view_flight_logged():
+    # Create a cursor
+    c_email_address = session['username']
+    cursor = conn.cursor()
+
+    # Execute the query to get flight information PREVIOUS FLIGHTS
+    query = 'SELECT t.*, f.*, c.* FROM ticket t JOIN flight f ON t.flight_num = f.flight_num JOIN customer c ON t.c_email_address = c.c_email_address WHERE t.c_email_address = %s AND departure_date <= CURDATE()'
+    cursor.execute(query, (c_email_address,))
+
+    # Fetch all the results
+    flights = cursor.fetchall()
+
+    # Close the cursor
+    cursor.close()
+
+    # Render the HTML template with the flight data
+    return render_template('view_flight_logged.html', flights=flights)
+
+#-------------------------------------------------------------------------
+# XENA
+# CUSTOMER VIEW FUTUREFLIGHTS (LOGGED IN)
+@app.route('/CviewFuture', methods=['GET'])
+def CviewFuture():
+    # Create a cursor
+    c_email_address = session['username']
+    cursor = conn.cursor()
+
+    # Execute the query to get flight information
+    query = 'SELECT t.*, f.*, c.* FROM ticket t JOIN flight f ON t.flight_num = f.flight_num JOIN customer c ON t.c_email_address = c.c_email_address WHERE t.c_email_address = %s'
+    cursor.execute(query, (c_email_address,))
+
+    # Fetch all the results
+    flights = cursor.fetchall()
+
+    # Close the cursor
+    cursor.close()
+
+    # Render the HTML template with the flight data
+    return render_template('home.html', flights=flights)
 
 #-------------------------------------------------------------------------
 # AIRLINE STAFF CREATE FLIGHT INFO
@@ -295,19 +481,105 @@ def createFlightAuth():
 	# return render_template('index.html')
 
 #-------------------------------------------------------------------------
-# AIRLINE STAFF CHANGE STATUS OF FLIGHT
+# AIRLINE STAFF ADD A NEW AIRPORT 
+@app.route('/add_airport', methods=['GET', 'POST'])
+def add_airport():
+    if request.method == 'POST':
+        # Get information from the form
+        airport_code = request.form['airport_code']
+        name = request.form['name']
+        city = request.form['city']
+        country = request.form['country']
+        num_of_terminals = request.form['num_of_terminals']
+        airport_type = request.form['airport_type']
 
-#Define route for ASchangeFlightStatus
-@app.route('/changeFlightStatus')
-def changeFlightStatus():
-	return render_template('ASchangeFlightStatus.html')
+        # Insert the new airport into the database
+        cursor = conn.cursor()
+        query = '''
+            INSERT INTO airport (
+                airport_code, name, city, country, num_of_terminals, airport_type
+            ) VALUES (%s, %s, %s, %s, %s, %s)
+        '''
+        cursor.execute(
+            query, (airport_code, name, city, country, num_of_terminals, airport_type)
+        )
+        conn.commit()
+        cursor.close()
 
-#Authenticates the ASchangeFlightStatus
-# @app.route('/changeFlightStatus', methods=['POST'])
-# def changeFlight():
+        # Redirect to a page showing the added airport or any other relevant page
+        return redirect(url_for('show_airports'))
 
+    # Render the form to add a new airport
+    return render_template('add_airport.html')
 
 #-------------------------------------------------------------------------
+# AIRLINE STAFF SHOW the airport added
+@app.route('/show_airports', methods=['GET'])
+def show_airports():
+    cursor = conn.cursor()
+    query = 'SELECT * FROM airport ORDER BY airport_code'
+    cursor.execute(query)
+    airports = cursor.fetchall()
+    cursor.close()
+    return render_template('show_airports.html', airports=airports)
+
+# AIRLINE STAFF SHOW the airport added
+@app.route('/add_airports', methods=['GET'])
+def add_airports():
+    cursor = conn.cursor()
+    query = 'SELECT * FROM airport'
+    cursor.execute(query)
+    airports = cursor.fetchall()
+    cursor.close()
+    return render_template('add_airports.html', airports=airports)
+
+#-------------------------------------------------------------------------
+# AIRLINE STAFF SHOW the airplane added
+
+# AIRLINE STAFF ADD A NEW AIRPLANE 
+@app.route('/add_airplane', methods=['GET', 'POST'])
+def add_airplane():
+    if request.method == 'POST':
+        # Get information from the form
+        airplane_id = request.form['airplane_id']
+        airline_name = request.form['airline_name']
+        maintenance_id = request.form['maintenance_id']
+        num_of_seats = request.form['num_of_seats']
+        airplane_age = request.form['airplane_age']
+        model_num = request.form['model_num']
+
+        # Insert the new airplane into the database
+        cursor = conn.cursor()
+        query = '''
+            INSERT INTO airplane (
+                airplane_id, airline_name, maintenance_id, num_of_seats, airplane_age, model_num
+            ) VALUES (%s, %s, %s, %s, %s, %s)
+        '''
+        cursor.execute(
+            query, (airplane_id, airline_name, maintenance_id, num_of_seats, airplane_age, model_num)
+        )
+        conn.commit()
+        cursor.close()
+
+        # Redirect to a page showing the added airplane or any other relevant page
+        return redirect(url_for('show_airplanes'))
+
+    # Render the form to add a new airplane
+    return render_template('add_airplane.html')
+
+# -------------------------------------------------------------------------
+    # AIRLINE STAFF SHOW the airplanes added
+@app.route('/show_airplanes', methods=['GET'])
+def show_airplanes():
+    cursor = conn.cursor()
+    query = 'SELECT * FROM airplane ORDER BY airplane_id'
+    cursor.execute(query)
+    airplanes = cursor.fetchall()
+    cursor.close()
+    return render_template('show_airplanes.html', airplanes=airplanes)
+
+# -------------------------------------------------------------------------
+# XENA HERE
 @app.route('/home')
 def home():
     username = session['username']
@@ -320,58 +592,196 @@ def home():
     for each in data1:
         print(each['first_name'])
 
-    return render_template('home.html', username=username, posts=data1)
+    cursor = conn.cursor()
 
+    # Execute the query to get flight information
+    query = 'SELECT t.*, f.*, c.* FROM ticket t JOIN flight f ON t.flight_num = f.flight_num JOIN customer c ON t.c_email_address = c.c_email_address WHERE t.c_email_address = %s AND f.departure_date >= CURDATE()'
+    cursor.execute(query, (username,))
+    flights = cursor.fetchall()
+    cursor.close()
+	# end of added
+
+    # Render the HTML template with the flight data
+    return render_template('home.html', username=username, posts=data1, flights=flights)
+
+
+
+# -------------------------------------------------------------------------
 
 @app.route('/AirlineHome')
 def AirlineHome():
-    username = session['username']
+    try:
+        username = session['username']
+        cursor = conn.cursor()
+
+        # Retrieve staff information
+        query_staff_info = 'SELECT first_name, airline_name FROM airline_staff WHERE username = %s ORDER BY username'
+        cursor.execute(query_staff_info, (username,))
+        staff_info = cursor.fetchall()
+        cursor.close()
+		
+
+        # Retrieve flights for the next 30 days
+        cursor = conn.cursor()
+        query_flights = '''
+            SELECT *
+            FROM flight
+            WHERE airline_name = %s AND departure_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+        '''
+        cursor.execute(query_flights, (username,))
+        flights = cursor.fetchall()
+        cursor.close()
+
+        return render_template('AirlineHome.html', username=username, posts=staff_info, flights=flights)
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
+# -------------------------------------------------------------------------
+
+# XENA!
+# AIRLINE STAFF EDIT STATUS OF FLIGHT HERE
+
+@app.route('/ASchangeFlightStatus', methods=['GET'])
+def ASchangeFlightStatus():
+    flight_num = request.args.get('flight_num')
+
     cursor = conn.cursor()
-    query = 'SELECT first_name, airline_name FROM airline_staff WHERE username = %s ORDER BY username'
-    cursor.execute(query, (username,))
-    data1 = cursor.fetchall()
+    query_status = 'SELECT status FROM flight WHERE flight_num = %s'
+    cursor.execute(query_status, (flight_num,))
+    current_status = cursor.fetchone()['status']
     cursor.close()
 
-    for each in data1:
-        print(each['first_name'])
+    return render_template('ASchangeFlightStatus.html', flight_num=flight_num, current_status=current_status)
 
-    return render_template('AirlineHome.html', username=username, posts=data1)
 
-#-------------------------------------------------------------------------
-#CUSTOMER TRACK SPENDING
+@app.route('/update_flight_status', methods=['POST'])
+def update_flight_status():
+    flight_num = request.form['flight_num']
+    new_status = request.form['status']
+
+    cursor = conn.cursor()
+    query = 'UPDATE flight SET status = %s WHERE flight_num = %s'
+    cursor.execute(query, (new_status, flight_num))
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for('ASfutureFlights', message='Flight status updated successfully'))
+
+
+
+
+
+
+
+# -------------------------------------------------------------------------
+
+
+
 @app.route('/spending', methods=['GET'])
 def track_spending():
-	cursor = conn.cursor()
-	query1 = 'SELECT SUM(ticket_sale_price) FROM ticket WHERE purchased_date >= CURDATE() - INTERVAL 1 YEAR'
-	cursor.execute(query1)
-	past_year = cursor.fetchall()
-	print("Past Year Query Result:", past_year)
-	query2 = 'SELECT MONTH(purchased_date) AS month, SUM(ticket_sale_price) AS total_spent FROM ticket WHERE purchased_date >= CURDATE() - INTERVAL 6 MONTH GROUP BY month'
-	six_months = cursor.fetchall()
-	cursor.close()
-	return render_template('home.html',past_year=past_year, six_months=six_months)
-#-------------------------------------------------------------------------
-#CUSTOMER RATING/COMMENTS
-@app.route('/review_flight', methods=['GET','POST'])
-def review_flight(ticket_id):
-	if request.method == "POST":
-		rating = request.form['rating']
-		comments = request.form['comments']
-		c_email_address = session.get('username')
-		cursor = conn.cursor()
-		query = 'INSERT INTO flight_review(c_email_address, rating, comments) VALUES (%s, %s, %s, %s)'
-		cursor.execute(query,(c_email_address, rating,comments))
-		cursor.close()
-		return redirect(url_for('home.html'))
-	return render_template('review_flight.html', ticket_id=ticket_id)
+    cursor = conn.cursor()
 
-		
-		
+    query1 = 'SELECT SUM(ticket_sale_price) FROM ticket WHERE purchased_date >= CURDATE() - INTERVAL 1 YEAR'
+    cursor.execute(query1)
+    past_year = cursor.fetchone()[0]  # Fetch the sum directly
+
+    query2 = 'SELECT MONTH(purchased_date) AS month, SUM(ticket_sale_price) AS total_spent FROM ticket WHERE purchased_date >= CURDATE() - INTERVAL 6 MONTH GROUP BY month'
+    cursor.execute(query2)
+    six_months = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template('home.html', past_year=past_year, six_months=six_months)
 
 
+#Define route for AirlineStaffCreateFlight
+@app.route('/confirmation_tickets', methods=['GET', 'POST'])
+def confirmation_tickets():
+    return render_template('confirmation_tickets.html')
+
+# Flask route for purchasing tickets
 
 
+# Function to insert ticket data into the database
+def insert_ticket(ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price):
+    with conn.cursor() as cursor:
+        # Insert ticket data into the 'ticket' table
+        sql = "INSERT INTO ticket (ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price, purchased_date, purchased_time) VALUES (%s, %s, %s, %s, %s, %s, %s, CURDATE(), CURTIME())"
+        values = (ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price)
+        cursor.execute(sql, values)
+    conn.commit()
 
+# AIRLINE STAFF ADD A NEW TICKET
+@app.route('/add_tickets', methods=['GET', 'POST'])
+def add_ticket():
+    if request.method == 'POST':
+        # Get information from the form
+        ticket_id = request.form['ticket_id']
+        flight_num = request.form['flight_num']
+        c_email_address = request.form['c_email_address']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        date_of_birth = request.form['date_of_birth']
+        ticket_sale_price = request.form['ticket_sale_price']
+        purchased_date = request.form['purchased_date']
+        purchased_time = request.form['purchased_time']
+
+        # Insert the new ticket into the database
+        cursor = conn.cursor()
+        query = '''
+            INSERT INTO ticket (
+                ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price, purchased_date, purchased_time
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        '''
+        cursor.execute(
+            query, (ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price, purchased_date, purchased_time)
+        )
+        conn.commit()
+        cursor.close()
+
+        # Redirect to a page showing the added ticket or any other relevant page
+        return redirect(url_for('show_tickets'))
+
+    # Render the form to add a new ticket
+    return render_template('add_tickets.html')
+
+
+@app.route('/show_tickets', methods=['GET', 'POST'])
+def show_tickets():
+    # Retrieve the c_email_address from the form data
+    c_email_address = request.form.get('c_email_address')
+
+    cursor = conn.cursor()
+
+    # Modify the query to include the condition for the logged-in user's email address
+    query = "SELECT * FROM ticket WHERE c_email_address = %s"
+
+    cursor.execute(query, (c_email_address,))
+    tickets = cursor.fetchall()
+    cursor.close()
+
+    return render_template('show_tickets.html', tickets=tickets)
+
+
+@app.route('/view_my_tickets', methods=['GET'])
+def view_my_tickets():
+    # Retrieve the c_email_address from the form data
+    c_email_address = session.get('username')
+
+    cursor = conn.cursor()
+
+    # Modify the query to include the condition for the logged-in user's email address
+    query = "SELECT * FROM ticket WHERE c_email_address = %s"
+
+    cursor.execute(query, (c_email_address))
+    tickets = cursor.fetchall()
+    cursor.close()
+
+    return render_template('view_my_tickets.html', tickets=tickets)
+
+#maintence_id
 		
 # @app.route('/post', methods=['GET', 'POST'])
 # def post():
@@ -383,6 +793,9 @@ def review_flight(ticket_id):
 # 	conn.commit()
 # 	cursor.close()
 # 	return redirect(url_for('home'))
+
+from flask import request, render_template
+
 
 @app.route('/logout')
 def logout():

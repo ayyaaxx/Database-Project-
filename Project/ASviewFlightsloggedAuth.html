@@ -4,7 +4,7 @@
 
     <head>
 
-        <title>View All the Flights as a Customer Not Logged In</title>
+        <title>View All the Flights the Worker </title>
 
         <style>
             table, th, td {
@@ -31,9 +31,6 @@
     </head>
 
     <body>
-
-        <h1>Welcome! View all available flights</h1>
-
         <table style="width:100%">
             <tr>
                 <th>Flight Number</th>
@@ -48,12 +45,13 @@
                 <th>Departure Airport</th>
                 <th>Departure Date</th>
                 <th>Departure Time</th>
+                <th>Purchase Ticket</th>
             </tr> 
             
 
             {% for data in flights %}
-                <tr >
-                    <td>{{data.flight_num}}</td>
+                <tr>
+                    <td>{{data['flight_num']}}</td>
                     <td>{{data['airline_name']}}</td>
                     <td>{{data['airport_code']}}</td>
                     <td>{{data['ticket_base_price']}}</td>
@@ -65,7 +63,8 @@
                     <td>{{data['departure_airport']}}</td>
                     <td>{{data['departure_date']}}</td>
                     <td>{{data['departure_time']}}</td>
-
+                    <td>{{ data['flight_num'] }}</td>
+                    <td><a href="{{ url_for('add_tickets', flight_num=data['flight_num']) }}" class="button">Purchase Ticket</a></td>
                 </tr>
             {% endfor %}
 

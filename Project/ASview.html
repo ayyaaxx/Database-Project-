@@ -45,11 +45,10 @@
                 <th>Departure Airport</th>
                 <th>Departure Date</th>
                 <th>Departure Time</th>
-                <th>Change Flight Status</th>
             </tr> 
             
 
-            {% for data in result %}
+            {% for data in flights %}
                 <tr>
                     <td>{{data['flight_num']}}</td>
                     <td>{{data['airline_name']}}</td>

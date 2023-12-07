@@ -59,7 +59,7 @@
     <form action="/Airlinelogin" method="POST">
         <h2>Login</h2>
         <input type="text" name="username" placeholder="Username" required/><br>
-        <input type="text" name="password" placeholder="Password" required/><br>
+        <input type="password" name="password" placeholder="Password" required/><br>
         <input type="submit" value="Login"/>
         {% if error %}
             <p class="error"><strong>Error:</strong> {{error}}</p>
