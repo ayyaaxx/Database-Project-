@@ -794,8 +794,6 @@ def view_my_tickets():
 # 	cursor.close()
 # 	return redirect(url_for('home'))
 
-from flask import request, render_template
-
 
 @app.route('/logout')
 def logout():

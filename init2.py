@@ -590,8 +590,6 @@ def show_tickets():
 
     return render_template('show_tickets.html', tickets=tickets)
 
-from flask import request, redirect, url_for
-
 @app.route('/delete_ticket/<ticket_id>', methods=['DELETE', 'POST'])
 def delete_ticket(ticket_id):
     # Your delete logic here
@@ -675,8 +673,6 @@ def ASchangeFlightStatus():
 # 	conn.commit()
 # 	cursor.close()
 # 	return redirect(url_for('home'))
-
-from flask import request, render_template
 
 
 @app.route('/logout')
