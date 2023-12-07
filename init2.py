@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 import os  # Add this import
+from datetime import datetime
 #Initialize the app from Flask
 # from flask_bcrypt import Bcrypt
 
@@ -442,21 +443,129 @@ def AirlineHome():
 
     return render_template('AirlineHome.html', username=username, posts=data1)
 
+#-----------------------------------------------------------------------
+#CUSTOMER TRACK SPENDING
+
 @app.route('/spending', methods=['GET'])
 def track_spending():
+    # Assuming you have a way to get the user's email address from the session
+    c_email_address = session.get('username')
+
+
+    if not c_email_address:
+        # Handle the case where there's no user in the session
+        error_message = "No user in session"
+        return render_template('error.html', error=error_message)
+
+
     cursor = conn.cursor()
 
-    query1 = 'SELECT SUM(ticket_sale_price) FROM ticket WHERE purchased_date >= CURDATE() - INTERVAL 1 YEAR'
-    cursor.execute(query1)
-    past_year = cursor.fetchone()[0]  # Fetch the sum directly
 
-    query2 = 'SELECT MONTH(purchased_date) AS month, SUM(ticket_sale_price) AS total_spent FROM ticket WHERE purchased_date >= CURDATE() - INTERVAL 6 MONTH GROUP BY month'
-    cursor.execute(query2)
+    # Total spending for the past year
+    query1 = 'SELECT SUM(ticket_sale_price) FROM ticket WHERE c_email_address = %s AND purchased_date >= CURDATE() - INTERVAL 1 YEAR'
+    cursor.execute(query1, (c_email_address,))
+    past_year = cursor.fetchone()# Fetch the sum directly
+
+
+    query2 = """SELECT MONTH(purchased_date) AS month, YEAR(purchased_date) AS year, SUM(ticket_sale_price) AS total_spent
+                FROM ticket
+                WHERE c_email_address = %s AND purchased_date >= CURDATE() - INTERVAL 6 MONTH
+                GROUP BY month, year;"""
+    cursor.execute(query2, (c_email_address,))
     six_months = cursor.fetchall()
+   
+    # Date range input from the user
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+
+
+    # Query for spending within the specified date range
+    query_range = """SELECT MONTH(purchased_date) AS month, YEAR(purchased_date) AS year, SUM(ticket_sale_price) AS total_spent
+                     FROM ticket
+                     WHERE c_email_address = %s AND purchased_date BETWEEN %s AND %s
+                     GROUP BY month, year;"""
+    cursor.execute(query_range, (c_email_address, start_date, end_date))
+    spending_range = cursor.fetchall()
+
 
     cursor.close()
 
-    return render_template('home.html', past_year=past_year, six_months=six_months)
+
+    return render_template('spending.html', past_year=past_year, six_months=six_months, spending_range=spending_range)
+
+#-----------------------------------------------------------------------
+#CUSTOMER RATING/COMMENTS
+@app.route('/review_flight', methods=['GET', 'POST'])
+def review_flight():
+    if request.method == "POST":
+        c_email_address = session.get('username')
+
+
+        if not c_email_address:
+            # No username in session, return an error response
+            error_message = "No username in session"
+            return render_template('error.html', error=error_message)
+
+
+        rating = request.form['rating']
+        comments = request.form['comments']
+        selected_flight_num = request.form['selected_flight_num']
+
+
+        # Insert the rating, comments, and selected flight_num into the database
+        cursor = conn.cursor()
+        rating_query = 'INSERT INTO customer_flight_rating (c_email_address, flight_num, rating, comments) VALUES (%s, %s, %s, %s)'
+        cursor.execute(rating_query, (c_email_address, selected_flight_num, rating, comments))
+        conn.commit()
+        cursor.close()
+
+
+        return redirect(url_for('home'))
+
+
+    else:
+        # Handle the case where the request method is a "GET" request
+        c_email_address = session.get('username')
+
+
+        if not c_email_address:
+            # No username in session, return an error response
+            error_message = "No username in session"
+            return render_template('error.html', error=error_message)
+
+
+        # Get the flights that the customer has already taken
+        cursor = conn.cursor()
+        current_datetime = datetime.now()
+        flight_query = """SELECT DISTINCT f.flight_num
+                           FROM ticket t JOIN flight f ON t.flight_num = f.flight_num
+                           WHERE t.c_email_address = %s AND f.departure_date < %s
+                        """
+
+
+        cursor.execute(flight_query, (c_email_address, current_datetime.date()))
+        customer_flights = cursor.fetchall()
+        cursor.close()
+
+
+        return render_template('review_flight.html', customer_flights=customer_flights)
+#--------------------------------------------------------------------------------------
+#AIRLIINE STAFF VIEW COMMENTS
+@app.route('/ASviewcomments/<flight_num>', methods=['GET'])
+def view_flight_ratings(flight_num):
+    cursor = conn.cursor()
+
+
+    # Query to get average rating and all comments for a specific flight
+    query = 'SELECT AVG(rating) AS avg_rating, comments FROM customer_flight_rating WHERE flight_num = %s GROUP BY comments'
+    cursor.execute(query, (flight_num,))
+    ratings_data = cursor.fetchall()
+
+
+    cursor.close()
+
+
+    return render_template('ASViewComments.html', flight_num=flight_num, ratings_data=ratings_data)
 
 # AIRLINE STAFF ADD A NEW TICKET
 # @app.route('/add_tickets', methods=['GET', 'POST'])
