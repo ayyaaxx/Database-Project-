@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Purchase Confirmation</title>
+</head>
+<body>
+    <h1>Welcome Customer {{username}}</h1>
+    <ul>
+        {% for ticket in tickets %}
+            <p>{{ ticket.c_email_address }} - {{ ticket.first_name }} - {{ ticket.last_name }}</p>
+            <li> Your Purchase was {{ticket.ticket_sale_price}}</li>
+        {% endfor %}
+    </ul>
+    
+
+    <a href="/">Log Out</a>
+</body>
+</html> 

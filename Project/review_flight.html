@@ -25,12 +25,15 @@
         <br>
 
         <label for="comments">Comments:</label>
-        <textarea name="comments" rows="4" cols="50" required></textarea>
+        <textarea name="comments" id="comments" rows="4" required></textarea>
 
         <br>
 
-        <button type="submit">Submit Review</button>
+        <input type="submit" value="Submit Review">
     </form>
 
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
 </body>
 </html>

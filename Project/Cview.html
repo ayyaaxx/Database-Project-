@@ -10,6 +10,21 @@
             table, th, td {
               border:1px solid rgb(20, 8, 69);
             }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #19125a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+
         </style>
            
         
@@ -31,10 +46,11 @@
                 <th>Departure Date</th>
                 <th>Departure Time</th>
             </tr> 
+            
 
-            {% for flight in data %}
-                <tr>
-                    <td>{{data['flight_num']}}</td>
+            {% for data in result %}
+                <tr >
+                    <td>{{data.flight_num}}</td>
                     <td>{{data['airline_name']}}</td>
                     <td>{{data['airport_code']}}</td>
                     <td>{{data['ticket_base_price']}}</td>
@@ -46,9 +62,14 @@
                     <td>{{data['departure_airport']}}</td>
                     <td>{{data['departure_date']}}</td>
                     <td>{{data['departure_time']}}</td>
+
                 </tr>
             {% endfor %}
 
         </table>
+
+        <br>
+        <a href="/" class="button">Return Home</a>
+        
     </body>
 </html>
