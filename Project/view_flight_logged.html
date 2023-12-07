@@ -30,6 +30,8 @@
         
     </head>
 
+    <h1>Previous Flights:</h1>
+
     <body>
         <table style="width:100%">
             <tr>
@@ -45,6 +47,7 @@
                 <th>Departure Airport</th>
                 <th>Departure Date</th>
                 <th>Departure Time</th>
+                <th>View Previous Reviews</th>
             </tr> 
             
 
@@ -62,14 +65,15 @@
                     <td>{{data['departure_airport']}}</td>
                     <td>{{data['departure_date']}}</td>
                     <td>{{data['departure_time']}}</td>
-                    <!-- <td>Change FLight</td> -->
+                    <td><a href="/" class="button">View Reviews</a></td>
+
                 </tr>
             {% endfor %}
 
         </table>
 
         <br>
-        <a href="/" class="button">Return Home</a>
+        <a href="/home" class="button">Return Home</a>
         
     </body>
 </html>
