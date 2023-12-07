@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <title>View All the Flights the Worker </title>
+
+        <style>
+            table, th, td {
+              border:1px solid rgb(20, 8, 69);
+            }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #19125a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+
+        </style>
+           
+        
+    </head>
+
+    <body>
+        <table style="width:100%">
+            <tr>
+                <th>Flight Number</th>
+                <th>Airline Name</th>
+                <th>Airport Code</th>
+                <th>Ticket Base Price</th>
+                <th>Capacity</th>
+                <th>Status</th>
+                <th>Arrival Airport</th>
+                <th>Arrival Date</th>
+                <th>Arrival Time</th>
+                <th>Departure Airport</th>
+                <th>Departure Date</th>
+                <th>Departure Time</th>
+                <th>View Customer Ratings</th>
+            </tr> 
+            
+
+            {% for data in flights %}
+                <tr>
+                    <td>{{data['flight_num']}}</td>
+                    <td>{{data['airline_name']}}</td>
+                    <td>{{data['airport_code']}}</td>
+                    <td>{{data['ticket_base_price']}}</td>
+                    <td>{{data['capacity']}}</td>
+                    <td>{{data['status']}}</td>
+                    <td>{{data['arrival_airport']}}</td>
+                    <td>{{data['arrival_date']}}</td>
+                    <td>{{data['arrival_time']}}</td>
+                    <td>{{data['departure_airport']}}</td>
+                    <td>{{data['departure_date']}}</td>
+                    <td>{{data['departure_time']}}</td>
+                    <!-- YANNI -->
+                    <td><a href="/" class="button">View Ratings</a></td>
+                </tr>
+            {% endfor %}
+
+        </table>
+
+        <br>
+        <a href="/AirlineHome" class="button">Return Home</a>
+        
+    </body>
+</html>
