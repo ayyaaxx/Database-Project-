@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,6 +15,35 @@
         {% for ticket in tickets %}
             <p>{{ ticket.c_email_address }} - {{ ticket.first_name }} - {{ ticket.last_name }}</p>
             <li> Your Purchase was {{ ticket.ticket_sale_price }}</li>            
+            </form>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Log Out</a>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Purchase Confirmation</title>
+</head>
+<body>
+    <h1>Ticket Purchase Successful</h1>
+    
+    <h2>Customer Information:</h2>
+    <h1>Welcome Customer</h1>
+    
+    <ul>
+        {% for ticket in tickets %}
+            <p>{{ ticket.c_email_address }} - {{ ticket.first_name }} - {{ ticket.last_name }}</p>
+            <li> Your Purchase was {{ ticket.ticket_sale_price }}</li>
+            <!-- Add a form for the delete button -->
+            <form action="{{ url_for('delete_ticket', ticket_id=ticket.ticket_id) }}" method="POST">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit">Delete Ticket</button>
             </form>
         {% endfor %}
     </ul>

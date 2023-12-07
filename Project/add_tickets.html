@@ -7,12 +7,10 @@
 </head>
 <body>
     <h1>Ticket Purchase Form</h1>
-    <form action="{{ url_for('add_tickets') }}" method="POST">
+    <form action="{{ url_for('add_tickets', flight_num=flight_num) }}" method="POST">
         <label for="ticket_id">Ticket ID:</label>
         <input type="text" name="ticket_id" required><br>
 
-        <label for="flight_num">Flight Number:</label>
-        <input type="text" name="flight_num" required><br>
 
         <label for="c_email_address">Email Address:</label>
         <input type="email" name="c_email_address" required><br>

@@ -3,111 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spending Tracker</title>
-</head>
-<body>
-<form action="/post" method="POST">
-	<h1>Welcome Customer {{username}}</h1>
-	<a href="/add_tickets">Tap here to buy your ticket</a><br>
-	<a href="/show_tickets">Tap here to view your purchased tickets</a><br>
+    <title>Flight Account</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-<a href="/review_flight">Review Flights</a><br>
-<a href="/view_flight_logged">See all your flights</a><br>
+        h1 {
+            color: #19125a;
+            margin-bottom: 20px;
+        }
 
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 18px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+        }
 
-</form>
-<!-- <form action="/spending" method="GET">
-	<h1>Track My Spending</h1>
-	<h2>Total Amount Spend in the Past Year</h2>
-	<p>Total Amount Spent: {{past_year}}</p>
-	
-	<h2>Month-wise Spending for the Last 6 months</h2>
-	<table>
-		<tr>
-			<th>Month</th>
-			<th>Total Spent</th>
-		</tr>
-		{% for row in six_months%}
-			<tr>
-				<td>{{row[0]}}</td>
-				<td>{{row[1]}}</td>
-			</tr>
-		{% endfor%}
-	</table>
-	
-	<style type="text/css">
-		table, th, td{
-			border: 1px solid black;
-		}
-	</style>
-	
-	<table>
-		<th>Time</th>
-		<th>Post</th>
-	
-	{% for line in posts %}
-		<tr>
-			<td>{{line['ts']}}</td>
-			<td>{{line['blog_post']}}</td>
-		</tr>
-	{% endfor %}
-	</table>
-</form> -->
+        .button:hover {
+            background-color: #297fb8;
+        }
 
-<form action="/spending" method="GET">
-    <h1>Track My Spending</h1>
-    
-    <h2>Total Amount Spend in the Past Year</h2>
-    <p>Total Amount Spent: {{ past_year[0][0] if past_year else 'No data' }}</p>
+        a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 5px 0;
+        }
 
-    <h2>Month-wise Spending for the Last 6 months</h2>
-    <table>
-        <tr>
-            <th>Month</th>
-            <th>Year</th>
-            <th>Total Spent</th>
-        </tr>
-        {% for row in six_months %}
-            <tr>
-                <td>{{ row[0] }}</td>
-                <td>{{ row['year'] }}</td>
-                <td>{{ row[1] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+        a:hover {
+            color: #297fb8;
+        }
 
-    <style type="text/css">
-        table, th, td{
-            border: 1px solid black;
+        .main-content {
+            text-align: center;
         }
     </style>
-
-    <table>
-        <th>Time</th>
-        <th>Post</th>
-
-        {% for line in posts %}
-            <tr>
-                <td>{{ line['ts'] }}</td>
-                <td>{{ line['blog_post'] }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-</form>
-
-
-
-
-
-
-<a href="/logout">Logout</a>
-
-	<h2>Six Months Spending:</h2>
-	<ul>
-		{% for record in six_months %}
-			<li>Month {{ record.month }}: ${{ record.total_spent }}</li>
-		{% endfor %}
-	</ul>
-	
+</head>
+<body>
+    <div class="main-content">
+        <h1>Welcome, {{ username }}!</h1>
+        <a href="/ASviewFlightsloggedAuth" class="button">View All Flights Available</a><br>
+        <a href="/add_tickets" class="button">Purchase a Ticket</a><br>
+        <a href="/show_tickets" class="button">View Purchased Tickets</a><br>
+        <a href="/review_flight" class="button">Review Flights</a><br>
+        <a href="/view_flight_logged" class="button">View All Your Flights</a><br>
+        <a href="/logout" class="button">Logout</a>
+    </div>
 </body>
 </html>
