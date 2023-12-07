@@ -7,19 +7,18 @@
 </head>
 <body>
     <h1>Ticket Purchase Successful</h1>
-
     
     <h2>Customer Information:</h2>
     <h1>Welcome Customer</h1>
-
     
     <ul>
         {% for ticket in tickets %}
             <p>{{ ticket.c_email_address }} - {{ ticket.first_name }} - {{ ticket.last_name }}</p>
-            <li> Your Purchase was {{ticket.ticket_sale_price}}</li>
+            <li> Your Purchase was {{ ticket.ticket_sale_price }}</li>            
+            </form>
         {% endfor %}
     </ul>
 
     <a href="/">Log Out</a>
 </body>
-</html> 
+</html>

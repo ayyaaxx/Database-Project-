@@ -3,9 +3,9 @@ from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 import os  # Add this import
 #Initialize the app from Flask
-from flask_bcrypt import Bcrypt
+# from flask_bcrypt import Bcrypt
 
-bcrypt = Bcrypt()
+# bcrypt = Bcrypt()
 app = Flask(__name__)
 
 #Configure MySQL
@@ -435,26 +435,103 @@ def track_spending():
 
     return render_template('home.html', past_year=past_year, six_months=six_months)
 
-
-#Define route for AirlineStaffCreateFlight
-@app.route('/confirmation_tickets', methods=['GET', 'POST'])
-def confirmation_tickets():
-    return render_template('confirmation_tickets.html')
-
 # Flask route for purchasing tickets
 
 # Function to insert ticket data into the database
-def insert_ticket(ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price):
-    with conn.cursor() as cursor:
-        # Insert ticket data into the 'ticket' table
-        sql = "INSERT INTO ticket (ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price, purchased_date, purchased_time) VALUES (%s, %s, %s, %s, %s, %s, %s, CURDATE(), CURTIME())"
-        values = (ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price)
-        cursor.execute(sql, values)
-    conn.commit()
+# def insert_ticket(ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price):
+#     with conn.cursor() as cursor:
+#         # Insert ticket data into the 'ticket' table
+#         sql = "INSERT INTO ticket (ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price, purchased_date, purchased_time) VALUES (%s, %s, %s, %s, %s, %s, %s, CURDATE(), CURTIME())"
+#         values = (ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price)
+#         cursor.execute(sql, values)
+#     conn.commit()
+
+# AIRLINE STAFF ADD A NEW TICKET
+# AIRLINE STAFF ADD A NEW TICKET
+# @app.route('/add_tickets', methods=['GET', 'POST'])
+# def add_tickets():
+#     if request.method == 'POST':
+#         # Get information from the form
+#         ticket_id = request.form['ticket_id']
+#         flight_num = request.form['flight_num']
+#         c_email_address = request.form['c_email_address']
+#         first_name = request.form['first_name']
+#         last_name = request.form['last_name']
+#         date_of_birth = request.form['date_of_birth']
+#         ticket_sale_price = request.form['ticket_sale_price']
+
+#         # Insert the new ticket into the database
+#         cursor = conn.cursor()
+#         query = '''
+#             INSERT INTO ticket (
+#                 ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price
+#             ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+#         '''
+#         try:
+#             cursor.execute(
+#                 query, (ticket_id, flight_num, c_email_address, first_name, last_name, date_of_birth, ticket_sale_price)
+#             )
+#             conn.commit()
+#         except Exception as e:
+#             conn.rollback()
+#             print(f"Error inserting data: {e}")
+#         finally:
+#             cursor.close()
+
+#         # Redirect to a page showing the added ticket or any other relevant page
+#         return redirect(url_for('show_tickets'))
+
+#     # Render the form to add a new ticket
+#     return render_template('add_tickets.html')
+
+
+# AIRLINE STAFF SHOW the tickets added
+# @app.route('/show_tickets', methods=['GET'])
+# def show_tickets():
+#     cursor = conn.cursor()
+#     query = 'SELECT * FROM ticket ORDER BY ticket_id'
+#     cursor.execute(query)
+#     tickets = cursor.fetchall()
+#     cursor.close()
+#     return render_template('show_tickets.html', tickets=tickets)
+
+
+
+# @app.route('/show_tickets', methods=['GET', 'POST'])
+# def show_tickets():
+#     # Retrieve the c_email_address from the form data
+#     c_email_address = request.form.get('c_email_address')
+
+#     cursor = conn.cursor()
+
+#     # Modify the query to include the condition for the logged-in user's email address
+#     query = "SELECT * FROM ticket WHERE c_email_address = %s"
+
+#     cursor.execute(query, (c_email_address,))
+#     tickets = cursor.fetchall()
+#     cursor.close()
+
+#     return render_template('show_tickets.html', tickets=tickets)
+
+# @app.route('/view_my_tickets', methods=['GET'])
+# def view_my_tickets():
+#     # Retrieve the c_email_address from the form data
+#     c_email_address = session['username']
+
+#     cursor = conn.cursor()
+
+#     # Modify the query to include the condition for the logged-in user's email address
+#     query = "SELECT * FROM ticket WHERE c_email_address = %s"
+
+#     cursor.execute(query, (c_email_address,))
+#     tickets = cursor.fetchall()
+#     cursor.close()
+
+#     return render_template('view_my_tickets.html', tickets=tickets)
 
 # AIRLINE STAFF ADD A NEW TICKET
 @app.route('/add_tickets', methods=['GET', 'POST'])
-def add_ticket():
+def add_tickets():
     if request.method == 'POST':
         # Get information from the form
         ticket_id = request.form['ticket_id']
@@ -490,7 +567,7 @@ def add_ticket():
 @app.route('/show_tickets', methods=['GET', 'POST'])
 def show_tickets():
     # Retrieve the c_email_address from the form data
-    c_email_address = request.form.get('c_email_address')
+    c_email_address = session['username']
 
     cursor = conn.cursor()
 
@@ -503,23 +580,21 @@ def show_tickets():
 
     return render_template('show_tickets.html', tickets=tickets)
 
-@app.route('/view_my_tickets', methods=['GET'])
-def view_my_tickets():
-    # Retrieve the c_email_address from the form data
-    c_email_address = session.get('username')
+# @app.route('/view_my_tickets', methods=['GET'])
+# def view_my_tickets():
+#     # Retrieve the c_email_address from the form data
+#     c_email_address = session['username']
 
-    cursor = conn.cursor()
+#     cursor = conn.cursor()
 
-    # Modify the query to include the condition for the logged-in user's email address
-    query = "SELECT * FROM ticket WHERE c_email_address = %s"
+#     # Modify the query to include the condition for the logged-in user's email address
+#     query = "SELECT * FROM ticket WHERE c_email_address = %s"
 
-    cursor.execute(query, (c_email_address,))
-    tickets = cursor.fetchall()
-    cursor.close()
+#     cursor.execute(query, (c_email_address,))
+#     tickets = cursor.fetchall()
+#     cursor.close()
 
-    return render_template('view_my_tickets.html', tickets=tickets)
-
-#maintence_id
+#     return render_template('view_my_tickets.html', tickets=tickets)
 		
 # @app.route('/post', methods=['GET', 'POST'])
 # def post():

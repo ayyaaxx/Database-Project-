@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Ticket Purchase Form</h1>
-    <form action="/show_tickets" method="POST" >
+    <form action="{{ url_for('add_tickets') }}" method="POST">
         <label for="ticket_id">Ticket ID:</label>
         <input type="text" name="ticket_id" required><br>
 
