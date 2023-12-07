@@ -1,9 +1,13 @@
+
 <html>
+
 <head>
+    <title>Change Flight Status</title>
+    <style>
+        table, th, td {
+          border:1px solid rgb(20, 8, 69);
+        }
 
-<title>Airline Change Flight Status</title>
-
-<style>
     .button {
         display: inline-block;
         padding: 10px 20px;
@@ -16,19 +20,32 @@
         border-radius: 4px;
         cursor: pointer;
     }
-</style>
 
+
+    </style>
 </head>
-<body>
-
-<h1>Change the Status of the Flight</h1>
 
 <body>
-    <!-- <p>Click a Button to Navigate</p> -->
+    <h2>Change Flight Status of Flight {{ flight_num }}</h2>
+    <h3>Current Status: {{ current_status }}</h3>
+    <form method="post" action="/update_flight_status">
 
-    <a href="/" class="button">Return Home</a>
+        <!-- <h3>Flight {{ flight_num }}</h3> -->
+    
+        <input type="hidden" name="flight_num" value="{{ flight_num }}">
+        
+        <label for="status">Select Flight Status:</label>
+        <select name="status" id="status">
+            <option value="On Time">On Time</option>
+            <option value="Delayed">Delayed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
 
+        <input type="submit" class="button" value="Submit">
+    </form>
+
+    <br>
+    <a href="/ASfutureFlights"class="button">Return to View Future Flights</a>
 </body>
 
-</body>
 </html>

@@ -4,7 +4,7 @@
 
     <head>
 
-        <title>View All the Flights as a Customer Not Logged In</title>
+        <title>View All the Flights the Worker </title>
 
         <style>
             table, th, td {
@@ -32,8 +32,7 @@
 
     <body>
 
-        <h1>Welcome! View all available flights</h1>
-
+        {% if flights %}
         <table style="width:100%">
             <tr>
                 <th>Flight Number</th>
@@ -48,12 +47,12 @@
                 <th>Departure Airport</th>
                 <th>Departure Date</th>
                 <th>Departure Time</th>
+                <th>Change Status</th>
             </tr> 
             
-
             {% for data in flights %}
-                <tr >
-                    <td>{{data.flight_num}}</td>
+                <tr>
+                    <td>{{data['flight_num']}}</td>
                     <td>{{data['airline_name']}}</td>
                     <td>{{data['airport_code']}}</td>
                     <td>{{data['ticket_base_price']}}</td>
@@ -65,14 +64,18 @@
                     <td>{{data['departure_airport']}}</td>
                     <td>{{data['departure_date']}}</td>
                     <td>{{data['departure_time']}}</td>
+                    <td><a href="/ASchangeFlightStatus?flight_num={{data['flight_num']}}" class="button">Change Status</a></td>
+
 
                 </tr>
             {% endfor %}
-
         </table>
+        {% else %}
+            <p>No scheduled flights to work.</p>
+        {% endif %}
 
         <br>
-        <a href="/" class="button">Return Home</a>
+        <a href="/AirlineHome" class="button">Return Home</a>
         
     </body>
 </html>

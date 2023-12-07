@@ -5,42 +5,63 @@
 
 <head>
 
+	<style>
+		table, th, td {
+		  border:1px solid rgb(20, 8, 69);
+		}
+
+	.button {
+		display: inline-block;
+		padding: 10px 20px;
+		font-size: 16px;
+		text-align: center;
+		text-decoration: none;
+		background-color: #19125a;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+	}
+	</style>
+
 </head>
 
 
+
 <body>
+	<h1>Welcome! Click Below to Explore!</h1>
+
+
 {% if not message %}
-	<a href="/login">Login</a>
+
+	<h2>View All Available Flights To Purchase</h2>
+	<a href="/CviewNotLogged" class="button">View Available Flights</a>
 	<br>
-	<a href="/register">Register</a>
 	<br>
-	<a href="/AirlineStaffHomepage">Airline Staff Home Page</a>
+
+	<h2>If you already have an account: </h2>
+	<a href="/login" class="button">Customer Login</a>
 	<br>
-	<a href="/registerAirline">If you're an airline staff register here</a>
 	<br>
-	<a href="/Airlinelogin">Airline Login</a>
+
+	<h2>If you would like to create an account:</h2>
+	<a href="/register" class="button">Register as a Customer</a>
+	<br>
+	<br>
+
+	<h2>If you are an Airline Staff and would like to login:</h2>
+	<a href="/Airlinelogin" class="button">Airline Login</a>
+	<br>
+	<br>
+
+	<h2>If you are an Airline Staff and would like to create your account:</h2>
+	<a href="/registerAirline" class="button">Airline Staff Register</a>
+
 
 	<!-- <button><a href="/AirlineStaffHomepage">Airline Staff Home Page</a></button> -->
 
 {% endif %}
 
-{% if message %}
-	<a href="/logout">Logout</a>
-	<a href="/remove_account">Remove Account</a>
-	<p class="message">You are logged in {{message}}. You have {{num}} follower(s)</p> </br>
-	<a href="/tweets">View your tweets</a> </br>
-	<a href="/find_people">Find people to follow</a> </br>
-	<a href="/unfollow">Unfollow someone</a> </br>
-	<a href="/view_followed">View people you have followed</a> </br>
-	</br>
-
-        <h4>15 most recent tweets from you and your followers </h4> </br>
-
-	{% for line in tweets%}
-	        <p>{{line}}</p>
-	        <hr>
-	{% endfor %}
-	{% endif %}
 </body>
 
 </html>
