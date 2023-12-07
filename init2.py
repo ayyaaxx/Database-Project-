@@ -237,9 +237,9 @@ def AirlineStaffHomepageAuth():
 # AIRLINE STAFF VIEW FLIGHTS INFO
 
 #Define route for AirlineStaffViewFlights
-@app.route('/ASviewFlights')
-def ASviewFlights():
-	return render_template('ASviewFlightsAuth.html')
+# @app.route('/ASviewFlightsAuth')
+# def ASviewFlights():
+# 	return render_template('ASviewFlightsAuth.html')
 
 @app.route('/ASviewFlightsAuth', methods=['GET'])
 def ASviewFlightsAuth():
@@ -261,7 +261,24 @@ def ASviewFlightsAuth():
     # Render the HTML template with the flight data
     return render_template('ASviewFlightsAuth.html', flights=flights)
 
+@app.route('/view_flight_logged', methods=['GET'])
+def view_flight_logged():
+    # Create a cursor
+    c_email_address = session['username']
+    cursor = conn.cursor()
 
+    # Execute the query to get flight information
+    query = 'SELECT t.*, f.*, c.* FROM ticket t JOIN flight f ON t.flight_num = f.flight_num JOIN customer c ON t.c_email_address = c.c_email_address WHERE t.c_email_address = %s'
+    cursor.execute(query, (c_email_address,))
+
+    # Fetch all the results
+    flights = cursor.fetchall()
+
+    # Close the cursor
+    cursor.close()
+
+    # Render the HTML template with the flight data
+    return render_template('view_flight_logged.html', flights=flights)
 #-------------------------------------------------------------------------
 # AIRLINE STAFF CREATE FLIGHT INFO
 
